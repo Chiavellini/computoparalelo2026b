@@ -7,12 +7,14 @@
 | `dbscan_p1.cpp` | P1: the whole matrix as one block, `parallel for` over the points |
 | `dbscan_p2.cpp` | P2: space split into `k` blocks (+ halo of width EPS), `parallel for` over the blocks |
 | `generate_data.py` | Input csv files (same generator as `DBSCAN_noise.ipynb`) |
-| `check.py` | Compares a result csv against sklearn's DBSCAN |
-| `run_experiments.py` | Runs the whole experiment, 10 repetitions → `results/experiments.csv` |
+| `check.py` | Compares a result csv against sklearn's DBSCAN, label by label (noise / core / border) |
+| `run_experiments.py` | Rebuilds with `make -B`, runs the whole experiment, 10 repetitions → `results/experiments.csv` |
 | `plot_speedup.py` | Averages, speedups (`results/summary.csv`) and charts (`results/*.png`) |
+| `GUIA_PROYECTO.md` | Guía en español: qué es el proyecto, cómo se conectan los archivos, qué entregar |
 
 Output csv: `x,y,label` with label `0` = noise, `1` = first order core, `2` = second order core.
-It can be plotted with the second cell of `DBSCAN_noise.ipynb`.
+`../DBSCAN_noise.ipynb` generates `data/4000_data.csv`, runs the three programs on it, plots the
+result and checks it against sklearn ("Run All").
 
 ## Build
 
@@ -41,6 +43,13 @@ python3 check.py data/20000_data.csv data/20000_results.csv
 
 Each program prints only the algorithm time in seconds (csv reading/writing is not timed).
 
+## Run from VS Code (▶ button)
+
+With no arguments the programs use `data/4000_data.csv → data/4000_results.csv`, all the cores and
+`k = 16`, so the ▶ button (Code Runner) works once the notebook's first cell (or
+`python3 generate_data.py 4000`) has created the input. The button compiles with `g++-15 -g` and no
+optimization: never time with those binaries. `run_experiments.py` rebuilds with the Makefile first.
+
 ## Full experiment
 
 ```bash
@@ -50,6 +59,7 @@ python3 plot_speedup.py
 ```
 
 Sizes {20000 … 200000}, threads {1, cores/2, cores, cores·2}, k {2, 4, 8, 16, 32, 64}, 10 repetitions.
-On the M2 (8 cores) it takes about 3 hours. Close other apps and keep the Mac plugged in and awake
+On this Mac's Apple M3 (8 cores: 4 performance + 4 efficiency, no hyper-threading) it takes roughly
+1.5 hours (estimated from the serial time at 200000 points, ~14 s, and the quick-run speedups). Close other apps and keep the Mac plugged in and awake
 (e.g. `caffeinate -i python3 run_experiments.py`), since background load changes the times.
 `python3 run_experiments.py --quick` is a 10-second smoke test that writes `results/experiments_quick.csv`.

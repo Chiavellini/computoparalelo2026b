@@ -5,7 +5,12 @@ CXXFLAGS = -O2 -std=c++17 -Wall -fopenmp
 LDFLAGS = -fopenmp
 
 ifeq ($(shell uname -s),Darwin)
-    LIBOMP = $(shell brew --prefix libomp)
+    # brew may not be in the PATH (e.g. when the notebook kernel runs make): fall back to the
+    # default Homebrew locations on Apple Silicon and Intel Macs
+    LIBOMP := $(shell brew --prefix libomp 2>/dev/null)
+    ifeq ($(LIBOMP),)
+        LIBOMP := $(firstword $(wildcard /opt/homebrew/opt/libomp /usr/local/opt/libomp))
+    endif
     # use the SDK's C++ headers explicitly (avoids a stale header folder left
     # behind by old Command Line Tools installs)
     SDK = $(shell xcrun --show-sdk-path)

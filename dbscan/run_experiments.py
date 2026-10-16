@@ -3,6 +3,7 @@
 #   P1:     every size x threads
 #   P2:     every size x threads x k
 # Each configuration is repeated REPS times (the plot script averages them).
+# It first rebuilds the three programs with the Makefile and checks that the input csv files exist.
 # Usage: python3 run_experiments.py           -> full experiment -> results/experiments.csv
 #        python3 run_experiments.py --quick   -> tiny smoke test -> results/experiments_quick.csv
 import os
@@ -32,6 +33,16 @@ def run(program, n, args):
     output = subprocess.run(command, capture_output=True, text=True, check=True).stdout
     return float(output)
 
+
+# Always rebuild with the Makefile flags (-O2) before measuring: the VS Code run button compiles
+# the same binaries with g++-15 -g and no optimization, which would distort every time.
+subprocess.run(["make", "-B"], cwd=folder, check=True, stdout=subprocess.DEVNULL)
+
+# every input file must exist before starting a run of hours
+missing = [n for n in SIZES if not os.path.exists(os.path.join(folder, "data", f"{n}_data.csv"))]
+if missing:
+    sys.exit(f"missing input files for n = {missing}; run: python3 generate_data.py "
+             + " ".join(str(n) for n in missing))
 
 # every configuration to measure: (version, n, threads, k)
 configs = []
