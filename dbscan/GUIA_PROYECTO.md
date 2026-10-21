@@ -115,7 +115,7 @@ Hay tres **contratos** que conectan todo. Si se rompe uno, se rompe la cadena:
    - Los programas reciben `input.csv output.csv [hilos] [k]`.
    - Imprimen en stdout **sólo el tiempo** en segundos, y `run_experiments.py` lo lee como número. Por eso
      cualquier aviso extra se manda a `cerr`.
-   - Sin argumentos usan valores por defecto, `data/4000_data.csv → data/4000_results.csv`, para que funcione
+   - Sin argumentos usan valores por defecto, `data/10000_data.csv → data/10000_results.csv`, para que funcione
      el botón ▶ de VS Code.
 
 Todas las rutas apuntan a `dbscan/data/`:
@@ -165,7 +165,7 @@ python3 plot_speedup.py                    # 4. summary.csv + 3 gráficas en res
 
 ### d) Botón ▶ de VS Code
 
-- **Qué hace:** sobre cualquiera de los tres `.cpp`, compila y corre con los valores por defecto (4000 puntos).
+- **Qué hace:** sobre cualquiera de los tres `.cpp`, compila y corre con los valores por defecto (10000 puntos).
 - **Limitación:** compila **sin optimizar** (`g++-15 -g`). Sirve para probar, nunca para medir tiempos.
   `run_experiments.py` siempre recompila con el Makefile antes de medir, así que no hay riesgo.
 

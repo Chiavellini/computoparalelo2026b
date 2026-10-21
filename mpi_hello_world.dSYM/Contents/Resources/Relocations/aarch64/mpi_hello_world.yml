@@ -1,0 +1,5 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/bernardomb/Desktop/CCP/computoparalelo2026b/mpi_hello_world'
+relocations:     []
+...

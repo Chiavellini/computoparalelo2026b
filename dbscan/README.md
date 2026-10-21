@@ -13,7 +13,7 @@
 | `GUIA_PROYECTO.md` | Guía en español: qué es el proyecto, cómo se conectan los archivos, qué entregar |
 
 Output csv: `x,y,label` with label `0` = noise, `1` = first order core, `2` = second order core.
-`../DBSCAN_noise.ipynb` generates `data/4000_data.csv`, runs the three programs on it, plots the
+`../DBSCAN_noise.ipynb` generates `data/10000_data.csv`, runs the three programs on it, plots the
 result and checks it against sklearn ("Run All").
 
 ## Build
@@ -45,9 +45,9 @@ Each program prints only the algorithm time in seconds (csv reading/writing is n
 
 ## Run from VS Code (▶ button)
 
-With no arguments the programs use `data/4000_data.csv → data/4000_results.csv`, all the cores and
-`k = 16`, so the ▶ button (Code Runner) works once the notebook's first cell (or
-`python3 generate_data.py 4000`) has created the input. The button compiles with `g++-15 -g` and no
+With no arguments the programs use `data/10000_data.csv → data/10000_results.csv`, all the cores and
+`k = 4`, so the ▶ button (Code Runner) works once the notebook's first cell (or
+`python3 generate_data.py 10000`) has created the input. The button compiles with `g++-15 -g` and no
 optimization: never time with those binaries. `run_experiments.py` rebuilds with the Makefile first.
 
 ## Full experiment

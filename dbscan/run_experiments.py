@@ -1,11 +1,3 @@
-# Runs the performance experiment and saves every measured time in a csv.
-#   serial: every size
-#   P1:     every size x threads
-#   P2:     every size x threads x k
-# Each configuration is repeated REPS times (the plot script averages them).
-# It first rebuilds the three programs with the Makefile and checks that the input csv files exist.
-# Usage: python3 run_experiments.py           -> full experiment -> results/experiments.csv
-#        python3 run_experiments.py --quick   -> tiny smoke test -> results/experiments_quick.csv
 import os
 import subprocess
 import sys
@@ -14,7 +6,7 @@ SIZES = [20000, 40000, 80000, 120000, 140000, 160000, 180000, 200000]
 K_VALUES = [2, 4, 8, 16, 32, 64]
 REPS = 10
 
-cores = os.cpu_count()  # number of virtual cores
+cores = os.cpu_count()
 THREADS = [1, cores // 2, cores, cores * 2]
 
 folder = os.path.dirname(os.path.abspath(__file__))
@@ -24,7 +16,6 @@ if "--quick" in sys.argv:
     REPS = 2
     output_name = "experiments_quick.csv"
 
-
 def run(program, n, args):
     """Runs one program on the n points file and returns the seconds it printed."""
     data = os.path.join(folder, "data", f"{n}_data.csv")
@@ -33,18 +24,13 @@ def run(program, n, args):
     output = subprocess.run(command, capture_output=True, text=True, check=True).stdout
     return float(output)
 
-
-# Always rebuild with the Makefile flags (-O2) before measuring: the VS Code run button compiles
-# the same binaries with g++-15 -g and no optimization, which would distort every time.
 subprocess.run(["make", "-B"], cwd=folder, check=True, stdout=subprocess.DEVNULL)
 
-# every input file must exist before starting a run of hours
 missing = [n for n in SIZES if not os.path.exists(os.path.join(folder, "data", f"{n}_data.csv"))]
 if missing:
     sys.exit(f"missing input files for n = {missing}; run: python3 generate_data.py "
              + " ".join(str(n) for n in missing))
 
-# every configuration to measure: (version, n, threads, k)
 configs = []
 for n in SIZES:
     configs.append(("serial", n, 1, 0))
@@ -66,7 +52,7 @@ with open(path, "w") as f:
             else:
                 seconds = run("dbscan_p2", n, [t, k])
             f.write(f"{version},{n},{t},{k},{rep},{seconds}\n")
-            f.flush()  # keep what was measured even if the run is interrupted
+            f.flush()
         print(f"[{number}/{len(configs)}] {version} n={n} threads={t} k={k} last={seconds:.4f}s")
 
 print("saved", path)
